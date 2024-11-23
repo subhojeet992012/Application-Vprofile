@@ -95,11 +95,11 @@ This setup leverages Docker to containerize the following services:
 
 2. **Build and start the Docker containers:**
    ```bash
-   docker-compose up --build
+   
    ```
 
 3. **Access the application:**
-   Once the containers are up and running, you can access the application via the configured NGINX server.
+   Once the containers are up and running, you can access the application via the configured NGINX server on port 80
 
 ---
 
