@@ -1,5 +1,3 @@
-Here's an updated and more user-friendly version of your README, designed to be more attractive and clear for GitHub users:
-
 ---
 
 # Application-Vprofile
