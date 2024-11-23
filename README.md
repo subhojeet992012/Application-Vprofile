@@ -1,51 +1,118 @@
+Here's an updated and more user-friendly version of your README, designed to be more attractive and clear for GitHub users:
+
+---
+
 # Application-Vprofile
-This is a repository which has docker files to create a application which utilizes Web Server > App Server > Memcached > Database > Rabbit MQ
 
-**You have to edit the application.properties file inside the tomcat application server** , 
-1. Change the JDBC url - Update the Ip address of the database. Remember to use the Internal IP for communication,
-2. Change the host of memcached server with the Internal IP
-3. Change the host of rabbitmq server with the Internal IP
+This repository contains Docker files to create an application that utilizes a complete tech stack: **Web Server** → **App Server (Tomcat)** → **Memcached** → **Database (MySQL)** → **RabbitMQ**.
 
-Below is the demo application properties file.
+The following steps describe how to set up the application and modify configuration files for internal communication.
 
-cat webapps/ROOT/WEB-INF/classes/application.properties
-#JDBC Configutation for Database Connection
-jdbc.driverClassName=com.mysql.jdbc.Driver
-jdbc.url=jdbc:mysql://172.17.0.2:3306/accounts?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull 
-jdbc.username=root
-jdbc.password=vprodbpass
+---
 
-#Memcached Configuration For Active and StandBy Host
-#For Active Host
-memcached.active.host=172.17.0.3
-memcached.active.port=11211
-#For StandBy Host
-memcached.standBy.host=vprocache02
-memcached.standBy.port=11211
+## Configuration Steps
 
-#RabbitMq Configuration
-rabbitmq.address=172.17.0.4
-rabbitmq.port=15672
-rabbitmq.username=guest
-rabbitmq.password=guest
+### 1. **Edit the `application.properties` File**
 
-#Elasticesearch Configuration
-elasticsearch.host =vprosearch01
-elasticsearch.port =9300
-elasticsearch.cluster=vprofile
-elasticsearch.node=vprofilenode
+The **`application.properties`** file is used to configure the connections for the database, Memcached, and RabbitMQ servers. You'll need to update the internal IP addresses for these services to ensure proper communication.
 
+**Path:** `webapps/ROOT/WEB-INF/classes/application.properties`
 
+Here are the changes you need to make:
 
-**Update the nginx configuration with the correct Ip and url of the Tomcat server.**
+#### **JDBC Configuration (Database Connection)**
 
-root@vagrant:~/vprofile-project/Docker-files/web# cat nginvproapp.conf
+- **Update the JDBC URL**: Change the IP address to the internal IP address of your database.
+- Example:
+  ```properties
+  jdbc.url=jdbc:mysql://<DB_INTERNAL_IP>:3306/accounts?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+  ```
+
+#### **Memcached Configuration (Active and Standby Hosts)**
+
+- **Update the Memcached server's IP**: Set the internal IP for the Memcached active and standby servers.
+- Example:
+  ```properties
+  memcached.active.host=<MEMCACHED_INTERNAL_IP>
+  memcached.standBy.host=<MEMCACHED_INTERNAL_IP>
+  ```
+
+#### **RabbitMQ Configuration**
+
+- **Update the RabbitMQ server's IP**: Set the internal IP for the RabbitMQ server.
+- Example:
+  ```properties
+  rabbitmq.address=<RABBITMQ_INTERNAL_IP>
+  ```
+
+---
+
+### 2. **Update the NGINX Configuration**
+
+To ensure that NGINX is correctly routing traffic to your Tomcat server, you'll need to update the IP address of the Tomcat server in the NGINX configuration file.
+
+**Path:** `nginvproapp.conf`
+
+Replace the IP address of the Tomcat server with its internal IP.
+
+#### **Example Configuration:**
+
+```nginx
 upstream vproapp {
- server 172.17.0.5:8080;
+  server <TOMCAT_INTERNAL_IP>:8080;
 }
+
 server {
   listen 80;
-location / {
-  proxy_pass http://172.17.0.5:8080;
+  
+  location / {
+    proxy_pass http://<TOMCAT_INTERNAL_IP>:8080;
+  }
 }
-}
+```
+
+---
+
+## Docker Stack Overview
+
+This setup leverages Docker to containerize the following services:
+
+1. **Web Server (NGINX)** – Acts as a reverse proxy, routing traffic to the Tomcat server.
+2. **App Server (Tomcat)** – Hosts the web application and connects to the MySQL database, Memcached, and RabbitMQ.
+3. **Memcached** – Used for caching and session management.
+4. **MySQL Database** – Stores the application data.
+5. **RabbitMQ** – Handles message queuing for communication between application components.
+
+---
+
+## Setup Instructions
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/Application-Vprofile.git
+   cd Application-Vprofile
+   ```
+
+2. **Build and start the Docker containers:**
+   ```bash
+   
+   ```
+
+3. **Access the application:**
+   Once the containers are up and running, you can access the application via the configured NGINX server on port 80
+
+---
+
+## Contributing
+
+We welcome contributions! Please feel free to fork this repository, open an issue, or submit a pull request.
+
+---
+
+### **License**
+
+This project is licensed under the MIT License.
+
+---
+
+This version is designed to make it easier for users to understand the necessary steps, and it uses clear headings, descriptions, and examples to guide them through the process. You can copy this markdown and paste it directly into your GitHub README file.
